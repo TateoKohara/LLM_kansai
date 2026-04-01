@@ -54,12 +54,21 @@ ITA_KANSAI_CORPUSから抽出した大阪弁パターン辞書をプロンプト
 
 ## クイックスタート
 
-### 推論
+### 対話モード
 
 ```bash
 # 環境構築
 uv sync
 
+# 対話チャット（repetition_penalty対応）
+uv run python chat.py
+```
+
+システムプロンプト・生成パラメータ（temp=0.6, top_p=0.95, top_k=20, repetition_penalty=1.2）が自動設定されます。
+
+### 単発推論
+
+```bash
 # 推論（ベースモデル + LoRAアダプタ）
 uv run mlx_lm.generate \
   --model ./mlx_model \
@@ -106,6 +115,7 @@ LLM_kansai/
 │   ├── clean_data_v2.py              # データクリーニング
 │   ├── enhance_diversity.py          # 語尾多様性強化
 │   └── eval_v4.py                    # 包括的評価
+├── chat.py                 # 対話スクリプト (repetition_penalty対応)
 ├── main.py
 ├── pyproject.toml
 ├── AGENTS.md               # プロジェクト計画・進捗
@@ -153,6 +163,11 @@ copies or substantial portions of the Software.
 | [Claude Opus 4.6](https://anthropic.com/) | Vibe coding（開発全般） |
 
 > **注**: GPT-4o / Claude API による大阪弁変換スクリプト (`step1_3_osaka_convert.py`) もリポジトリに含まれていますが、実際の学習データ生成には使用していません。すべての変換はベースモデルによるローカル処理 (`step1_3_local_convert.py`) で実施しています。
+
+## 既知の課題
+
+- 語尾に「だわ」（名古屋弁寄り）が出力されることがある → [#1](https://github.com/TateoKohara/LLM_kansai/issues/1)
+- 応答長が短め（平均94字） — ベースモデルの677字と比べて大幅に短縮
 
 ## 動作要件
 
