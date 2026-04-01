@@ -16,7 +16,7 @@ Qwen3-Swallow-8B-SFTをベースに、既存日本語会話データを大阪弁
 | ベースモデル | `tokyotech-llm/Qwen3-Swallow-8B-SFT-v0.2` (Apache 2.0) |
 | 学習手法 | QLoRA via mlx-lm |
 | データ戦略 | 複合C: 合成データ主体 + ITA_KANSAI_CORPUSを品質基準に |
-| 合成データAPI | GPT-4oで大阪弁変換 |
+| 合成データ変換 | ベースモデル（Qwen3-Swallow-8B 4bit）でローカル変換 |
 | データ量 | v4: 1,714件（train） / 214件（valid） / 215件（test） |
 | 公開先 | HuggingFace |
 
@@ -39,7 +39,7 @@ Qwen3-Swallow-8B-SFTをベースに、既存日本語会話データを大阪弁
 - `scripts/step1_2_build_osaka_patterns.py` → `data/osaka_patterns.json`
 
 ### Step 1.3: 大阪弁変換パイプライン構築 ✅
-- GPT-4o APIでバッチ変換
+- ベースモデル（Qwen3-Swallow-8B 4bit）でローカルバッチ変換
   - システムプロンプトに大阪弁パターン辞書を挿入
   - **assistantの応答のみ**を大阪弁化（userメッセージは標準語のまま）
   - 京都弁・神戸弁が混入しないよう明示指示
