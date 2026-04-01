@@ -13,6 +13,7 @@ wheels/
 mlx_model/
 adapters/
 adapters_v4_1600/
+fused_model/
 
 # Logs
 *.log

@@ -158,19 +158,28 @@ uv run mlx_lm.lora \
 
 ---
 
-## Phase 4: モデル公開 ⬜ 未着手
+## Phase 4: モデル公開 ✅ 完了
 
-### Step 4.1: アダプタ融合・アップロード
+### Step 4.1: アダプタ融合・アップロード ✅
 ```bash
+# 融合
 uv run mlx_lm.fuse \
   --model ./mlx_model \
   --adapter-path ./adapters \
-  --upload-repo TateoKohara/Osaka-Swallow-8B \
-  --hf-path tokyotech-llm/Qwen3-Swallow-8B-SFT-v0.2
-```
-- GGUF形式もエクスポート（`--export-gguf`）でllama.cpp互換
+  --save-path ./fused_model
 
-### Step 4.2: モデルカード
+# アップロード（huggingface_hub経由）
+uv run python -c "
+from huggingface_hub import HfApi
+api = HfApi()
+api.create_repo('TeoHug/Osaka-Swallow-8B', exist_ok=True)
+api.upload_folder(folder_path='./fused_model', repo_id='TeoHug/Osaka-Swallow-8B')
+"
+```
+- 融合モデル: `./fused_model/`（4.3GB）
+- **公開先**: https://huggingface.co/TeoHug/Osaka-Swallow-8B
+
+### Step 4.2: モデルカード ✅
 - ベースモデル帰属（Qwen3-Swallow / Apache 2.0）
 - ITA_KANSAI_CORPUS MITライセンス表示（**表示義務あり**）
   ```
@@ -179,7 +188,7 @@ uv run mlx_lm.fuse \
   http://opensource.org/licenses/mit-license.php
   ```
 - system prompt例・推奨生成パラメータ（Temperature=0.6, TopP=0.95, TopK=20）
-- 使用例・制限事項
+- 使用例・制限事項・既知の課題
 
 ---
 
@@ -188,6 +197,7 @@ uv run mlx_lm.fuse \
 ```
 LLM_kansai/
 ├── mlx_model/              # ベースモデル (4.3GB, .gitignore)
+├── fused_model/            # 融合済みモデル (4.3GB, .gitignore, HFへ公開済み)
 ├── adapters/               # v4 iter2000 アダプタ (777MB, .gitignore)
 ├── adapters_v4_1600/       # v4 iter1600 アダプタ (37MB, .gitignore)
 ├── data/
@@ -204,6 +214,7 @@ LLM_kansai/
 │   ├── clean_data_v2.py     # v2→v3変換
 │   ├── enhance_diversity.py  # v3→v4多様性強化
 │   └── eval_v4.py            # 包括的評価
+├── chat.py                 # 対話型チャット（repetition_penalty対応）
 ├── main.py
 ├── pyproject.toml
 ├── AGENTS.md
