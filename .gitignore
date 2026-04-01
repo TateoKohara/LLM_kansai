@@ -1,0 +1,21 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Model & adapter weights (large binary files)
+mlx_model/
+adapters/
+adapters_v4_1600/
+
+# Logs
+*.log
+
+# Environment
+.env
